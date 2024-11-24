@@ -13,7 +13,19 @@
       </div>
 
       <!-- Game options with image selection, difficulty selection, and music/sound toggle -->
-      <div class="game-option-bar"></div>
+      <div class="game-option-bar">
+        <button class="game-button" id="choose-image-button" >Choose Image</button>
+        <select class="game-button" name="difficulty" id="choose-difficulty-button">
+          <!-- Need a check in JS to make sure default is not selected before starting game -->
+          <option value="" disabled selected>Select a difficulty</option>
+          <option value="easy">Easy</option>
+          <option value="normal">Normal</option>
+          <option value="hard">Hard</option>
+        </select>
+        <button class="game-button">
+          <img class="game-button-image" src="icons/sound.png" />
+        </button>
+      </div>
 
       <!-- Gameboard -->
       <div class="gameboard"></div>
