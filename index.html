@@ -18,10 +18,40 @@
 
     <div class="main">
       <div class="container">
-        <div class="popups">
-          <div class="show"></div>
 
-          <div id="howToPopup" class="howTo hide">
+        <div id="howToPopup" class="hide">
+          <div class="popup">
+            <div class="popup-content">
+              <div class="popup-header">
+                <span>How To Play</span>
+                <button class="close-popup-button" id="closeHowToBtn" ><span>&times;</span></button>
+              </div>
+
+              <div class="words">
+                <span>Move squares in right order</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="aboutPopup" class="hide">
+          <div class="popup">
+            <div class="popup-content">
+              <div class="popup-header">
+                <span>About</span>
+                <button class="close-popup-button" id="closeAboutBtn" ><span>&times;</span></button>
+              </div>
+
+              <div class="words">
+                <span>About Us</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="popups">
+
+          <!-- <div id="howToPopup" class="hide">
             <div class="content">
               <div class="top">
                 <span class="popTop">How To Play</span>
@@ -32,9 +62,9 @@
                 <span>Move squares in right order</span>
               </div>
             </div>
-          </div>
+          </div> -->
 
-          <div id="aboutPopup" class="about hide">
+          <!-- <div id="aboutPopup" class="about hide">
             <div class="content">
               <div class="top">
                 <span class="popTop">About</span>
@@ -45,7 +75,7 @@
                 <span>About us</span>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <div id="winPopup" class="win hide">
             <div class="content">
@@ -76,6 +106,8 @@
             <img src="./icons/music-on.png" /><span>Sound</span>
           </button>
         </div>
+
+        <div><button id="start-game-button">Start Game</button></div>
 
         <div class="game">
           <div class="game-container">
@@ -117,7 +149,8 @@
 
     <footer>By Madison Gibbons, James Han, and Rayhaan Mohamed :)</footer>
     <audio id="background-music" loop>
-      <source src="./music/time_for_adventure.mp3" type="audio/mpeg">Your browser does not support the audio element.
+      <source src="./music/time_for_adventure.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
     </audio>
 
     <script src="game.js"></script>
