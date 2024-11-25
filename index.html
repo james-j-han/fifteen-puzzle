@@ -6,131 +6,119 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <header>
+      <div class="name"><h1>The Fifteen Puzzle</h1></div>
 
-      <header>
-        <div class = "name"><h1>The Fifteen Puzzle</h1></div>
+      <div class="buttons">
+        <button id="aboutBtn">About</button>
 
-        <div class = "buttons">
+        <button id="howToBtn">How to Play</button>
+      </div>
+    </header>
 
-          <button id = "aboutBtn">About</button>
+    <div class="main">
+      <div class="container">
+        <div class="popups">
+          <div class="show"></div>
 
-          <button id = "howToBtn">How to Play</button>
+          <div id="howToPopup" class="howTo hide">
+            <div class="content">
+              <div class="top">
+                <span class="popTop">How To Play</span>
+                <button id="closeHowToBtn">&times;</button>
+              </div>
 
+              <div class="words">
+                <span>Move squares in right order</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="aboutPopup" class="about hide">
+            <div class="content">
+              <div class="top">
+                <span class="popTop">About</span>
+                <button id="closeAboutBtn">&times;</button>
+              </div>
+
+              <div class="words">
+                <span>About us</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="winPopup" class="win hide">
+            <div class="content">
+              <div>Congratulations!</div>
+            </div>
+          </div>
         </div>
 
-      </header>
-      
-      <div class = "main">
-        <div class = "container">
-          <div class = "popups">
-
-            <div class = "show"></div>
-
-            <div id = "popup" class = "howTo hide">
-              <div class = "content">
-
-                <div class = "top">
-                  <span class = "popTop">How To Play</span>
-                  <button id = "closeBtn">&times</button>
-                </div>
-
-                <div class = "words">
-                  <span>Move squares in right order</span>
-                </div>
-
-              </div>
-            </div>
-
-            <div id = "popup" class = "about hide">
-              <div class = "content">
-
-                <div class = "top">
-                  <span class = "popTop">About</span>
-                  <button id = "closeBtn">&times</button>
-                </div>
-
-                <div class = "words">
-                  <span>About us</span>
-                </div>
-
-              </div>
-            </div>
-
-            <div id = "popup" class = "win hide">
-              <div class = "content">
-
-                <div> Congratulations!</div>
-
-              </div>
+        <div class="choices">
+          <div class="imgDrop">
+            <button id="imageChoiceBtn">Choose Image &#11167;</button>
+            <div class="img-cont hide">
+              <!-- <img>
+                <img>
+                <img>
+                <img> -->
             </div>
           </div>
-
-          <div class = "choices">
-              <div class = "imgDrop">
-                <button id = "imageChoiceBtn">Choose Image &#11167</button>
-                <div class = "img-cont hide">
-                  <img>
-                  <img>
-                  <img>
-                  <img>
-                </div>
-              </div>
-              <div class = "diffDrop">
-                <button id = "difficultyBtn">Difficulty &#11167</button>
-                <div class = "diff-cont hide">
-                  <span id = "easy">Easy : 3x3</span><br>
-                  <span id = "normal">Normal : 4x4</span><br>
-                  <span id = "hard">Hard: 5x5</span><br>
-                </div>
-              </div>
-              <button id = "soundBtn"><img src = "images/music-icon on.png"><span>Sound</span></button>
-          </div>
-        
-          <div class = "game">
-            <div class = "game-container">
-              <div class = "gameGrid fourbyfour">
-
-                <div class = "square">1</div>
-                <div class = "square">2</div>
-                <div class = "square">3</div>
-                <div class = "square">4</div>
-
-                <div class = "square">5</div>
-                <div class = "square">6</div>
-                <div class = "square">7</div>
-                <div class = "square">8</div>
-
-                <div class = "square">9</div>
-                <div class = "square">10</div>
-                <div class = "square">11</div>
-                <div class = "square">12</div>
-
-                <div class = "square">13</div>
-                <div class = "square">14</div>
-                <div class = "square">15</div>
-                <div class = "square blank"></div>
-
-              </div>
+          <div class="diffDrop">
+            <button id="difficultyBtn">Difficulty &#11167;</button>
+            <div class="diff-cont hide">
+              <span id="easy">Easy : 3x3</span><br />
+              <span id="normal">Normal : 4x4</span><br />
+              <span id="hard">Hard: 5x5</span><br />
             </div>
           </div>
+          <button id="soundBtn">
+            <img src="./icons/music-on.png" /><span>Sound</span>
+          </button>
+        </div>
 
-          <div class = "extra">
+        <div class="game">
+          <div class="game-container">
+            <div class="gameGrid fourbyfour">
+              <div class="square">1</div>
+              <div class="square">2</div>
+              <div class="square">3</div>
+              <div class="square">4</div>
 
-            <div id = "moves" class = "moves">
-              Number of Moves: <span id = "numMoves">0</span>
+              <div class="square">5</div>
+              <div class="square">6</div>
+              <div class="square">7</div>
+              <div class="square">8</div>
+
+              <div class="square">9</div>
+              <div class="square">10</div>
+              <div class="square">11</div>
+              <div class="square">12</div>
+
+              <div class="square">13</div>
+              <div class="square">14</div>
+              <div class="square">15</div>
+              <div class="square blank"></div>
             </div>
-
-            <div id = "timer" class = "timer">
-              Timer: <span class = "time">0:00</span>
-            </div>
-
           </div>
+        </div>
+
+        <div class="extra">
+          <div id="moves" class="moves">
+            Number of Moves: <span id="numMoves">0</span>
+          </div>
+
+          <div id="timer" class="timer">
+            Timer: <span class="time">0:00</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <footer>
-      By Madison Gibbons, James Han, and Rayhaan Mohamed :)
-    </footer>
+    <footer>By Madison Gibbons, James Han, and Rayhaan Mohamed :)</footer>
+    <audio id="background-music" loop>
+      <source src="./music/time_for_adventure.mp3" type="audio/mpeg">Your browser does not support the audio element.
+    </audio>
 
     <script src="game.js"></script>
   </body>
