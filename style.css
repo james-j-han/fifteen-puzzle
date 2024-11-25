@@ -12,6 +12,7 @@ html {
   color: #333333;
   background-color: #f9d5d3;
 }
+
 button {
   cursor: pointer;
 }
@@ -27,9 +28,6 @@ header {
   color: #ffffff;
 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-footer {
-  text-align: center;
 }
 
 .hide {
@@ -95,7 +93,7 @@ footer {
   /* border-bottom: 2px solid green; */
 }
 
-.choices button {
+.choices-button {
   border-radius: 10px;
   width: auto;
   height: 40px;
@@ -110,15 +108,34 @@ footer {
   justify-content: center;
 }
 
-.choices button:hover {
+.choices-button:hover {
   background-color: #c02f3b;
   color: rgb(241, 241, 241);
   transition: all 0.3s ease-in-out;
 }
 
-.choices .active {
+/* .choices .active {
   background-color: #a52933;
   color: rgb(214, 214, 214);
+} */
+
+.difficulty-button {
+  margin: 10px;
+  padding: 10px;
+  width: 200px;
+  height: 60px;
+  background-color: transparent;
+  border: none;
+  /* border-bottom: 2px solid #c02f3b; */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  font-size: 1.4rem;
+}
+
+.difficulty-button:hover {
+  background-color: #c02f3b;
+  color: rgb(241, 241, 241);
+  transition: all 0.3s ease-in-out;
 }
 
 #soundBtn span {
@@ -195,14 +212,7 @@ footer {
   text-align: center;
 }
 
-footer {
-  background-color: #f9d5d3;
-  color: #d11b1b;
-  font-size: 1.3rem;
-  padding: 10px;
-}
-
-.popup {
+.popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -217,82 +227,116 @@ footer {
 
 .popup-content {
   background-color: white;
-  padding: 20px;
+  /* padding: 20px; */
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
-  width: 80%; /* Adjust width as needed */
-  max-width: 400px; /* Prevent the popup from getting too large */
+  /* width: 60%; */
+  width: fit-content;
+  max-width: 80%;
+  overflow: hidden;
 }
 
-/* .popup {
+.popup-body-content-h {
   display: flex;
   justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 50%;
+}
 
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  padding: 30px;
-
-  font-size: 1.5rem;
-} */
-
-.content {
+.popup-body-content-v {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  height: 100%;
+  justify-content: center;
+  align-items: center;
 }
-.popups.show {
+
+.image-container {
+  width: 140px;
+  height: 140px;
+  margin: 10px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.image-container:hover {
+  background-color: #c02f3b;
+  border: 6px solid black;
+  border-radius: 20px;
+  color: rgb(241, 241, 241);
+  transition: all 0.3s ease-in-out;
+}
+
+.selected {
+  border: 6px solid #c02f3b;
+  border-radius: 20px;
+}
+
+.selected-diff {
+  border: 6px solid #c02f3b;
+  border-radius: 10px;
+}
+
+ol > li,
+ul > li {
+  font-weight: bold;
+}
+
+ol > li ul li,
+ul > li ul li {
+  font-weight: normal;
 }
 
 .popup-header {
   display: flex;
+  position: relative;
   height: 40px;
-  justify-content: space-between;
-  /* position: relative; */
+  justify-content: center;
   align-items: center;
-  border-bottom: 2px solid red;
-  background-color: lightblue;
+  padding: 20px;
+
+  border-bottom: 2px solid #a33c44;
+  background-color: #e04552;
+  color: #ffffff;
+
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.popTop {
-  flex-grow: 1;
-  text-align: center;
-  /* border: 2px solid black; */
+.popup-header button {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 .close-popup-button {
-  /* position: absolute; */
+  color: #ffffff;
   cursor: pointer;
   border: none;
   background: transparent;
-  /* right: 35px; */
   font-size: 2rem;
   font-weight: 600;
-  /* line-height: 20px; */
-  /* padding: 5px; */
-  background-color: lightpink;
-  height: 100%;
+  margin: 10px;
+  height: 60px;
+  width: 60px;
+  border-radius: 20px;
 }
 
-.words {
+.close-popup-button:hover {
+  background-color: #c02f3b;
+  color: rgb(241, 241, 241);
+  transition: all 0.3s ease-in-out;
+}
+
+.popup-body {
+  padding: 20px 40px 20px 40px;
   width: 100%;
   display: flex;
-  /* text-align: center; */
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  /* border: 2px solid black; */
+  flex-direction: column;
+  text-align: start;
+  box-sizing: border-box;
 }
 
-.words span {
-  /* border: 2px solid black; */
-  display: block;
+footer {
+  text-align: center;
+  color: #d11b1b;
+  font-size: 1.3rem;
+  padding: 10px;
 }
