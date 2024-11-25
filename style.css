@@ -32,7 +32,8 @@ footer{
 }
 
 .hide{
-  display: none;
+  visibility: hidden;
+  opacity: 0;
   transition: all 0.3s ease-in-out;
 }
 
@@ -227,9 +228,10 @@ footer{
   width: 100%;
   height: 100%;
 }
-.popups.show{
 
-}
+/* .popups.show{
+
+} */
 
 .top{
   display: flex;
@@ -271,4 +273,63 @@ footer{
 .words span{
   /* border: 2px solid black; */
   display: block;
+}
+
+.dropdown{
+  position: relative;
+  display: inline-block;
+}
+
+.dropDown-cont{
+  position: absolute;
+  overflow: hidden;
+  z-index: 1;
+  text-align: center;
+  justify-content: center;
+ 
+  box-shadow:  0px 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  background-color: #ee3141;
+  color: white;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.dropDown-cont span{
+  min-width: 150px;
+  display: block;
+  padding: 10px;
+  
+  cursor: pointer; 
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.dropDown-cont.img-cont{
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: max-height 0.5s ease, opacity 0.3s ease, visibility 0.3s ease;
+}
+.imgList div{
+  cursor: pointer;
+}
+
+.dropDown-cont.img-cont.show {
+  max-height: 500px; /* Adjust to fit the content */
+  opacity: 1;
+  visibility: visible;
+}
+
+.dropDown-cont img{
+  height: 60px;
+}
+
+.dropDown-cont span:hover,
+.dropDown-cont .imgList div:hover{
+  background-color: #a52933;
+}
+
+.show{
+  visibility: hidden;
+  opacity: 1;
 }
