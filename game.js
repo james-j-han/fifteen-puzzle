@@ -1,5 +1,8 @@
-const chooseImageElement = document.getElementById('choose-image-button');
-const chooseDifficultyElement = document.getElementById('choose-difficulty-button');
+const backgroundMusic = document.getElementById('background-music');
+const soundButton = document.getElementById('soundBtn');
 
-chooseImageElement.addEventListener('click', () => console.log('Hello World!'));
-chooseDifficultyElement.addEventListener('change', () => console.log(chooseDifficultyElement.value));
+window.onload = function () {
+  backgroundMusic.play();
+}
+
+soundButton.addEventListener('click', () => backgroundMusic.muted = !backgroundMusic.muted);

@@ -1,6 +1,7 @@
-body, html{
-  font-family: 'Roboto', sans-serif;
-  
+body,
+html {
+  font-family: "Roboto", sans-serif;
+
   margin: 0;
   padding: 0;
   height: 100%;
@@ -9,39 +10,39 @@ body, html{
   overflow: auto;
 
   color: #333333;
-  background-color: #F9D5D3;
+  background-color: #f9d5d3;
 }
-button{
+button {
   cursor: pointer;
 }
 
-header{
+header {
   display: flex;
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  
+
   border-bottom: 2px solid #a33c44;
   background-color: #e04552;
-  color: #FFFFFF;
+  color: #ffffff;
 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-footer{
+footer {
   text-align: center;
 }
 
-.hide{
+.hide {
   display: none;
   transition: all 0.3s ease-in-out;
 }
 
-.name{
+.name {
   font-size: 1.4rem;
   margin: 0;
 }
 
-.buttons button{
+.buttons button {
   font-size: 1.4rem;
   font-weight: bold;
   background: transparent;
@@ -50,28 +51,28 @@ footer{
   border-radius: 10px;
   margin: 0 7px;
   transition: all 0.3s ease-in-out;
-  
-  color: #FFFFFF;
+
+  color: #ffffff;
 }
 
-.buttons button:hover{
+.buttons button:hover {
   background-color: #a02f38;
   color: #f0f0f0;
 }
 
-.buttons .active{
+.buttons .active {
   background-color: #a33942;
-  color: #e0e0e0
+  color: #e0e0e0;
 }
 
-.main{
+.main {
   flex: 1;
   justify-items: center;
   align-items: center;
   /* border: 2px solid black; */
 }
 
-.container{
+.container {
   /* border: 2px solid black; */
 
   width: 50%;
@@ -84,7 +85,7 @@ footer{
   flex-direction: column;
 }
 
-.choices{
+.choices {
   display: flex;
   padding: 30px 10px 10px 10px;
   width: 100%;
@@ -94,13 +95,13 @@ footer{
   /* border-bottom: 2px solid green; */
 }
 
-.choices button{
+.choices button {
   border-radius: 10px;
   width: auto;
   height: 40px;
   padding: 5px 20px;
   font-size: 1rem;
-  background-color: #E63946;
+  background-color: #e63946;
   color: white;
   font-weight: bold;
 
@@ -109,56 +110,55 @@ footer{
   justify-content: center;
 }
 
-.choices button:hover{
+.choices button:hover {
   background-color: #c02f3b;
   color: rgb(241, 241, 241);
   transition: all 0.3s ease-in-out;
 }
 
-.choices .active{
+.choices .active {
   background-color: #a52933;
   color: rgb(214, 214, 214);
-
 }
 
-#soundBtn span{
+#soundBtn span {
   display: inline-block;
 }
 
-.choices img{
+.choices img {
   height: 22px;
   margin-right: 2px;
   /* vertical-align: text-bottom; */
 }
 
-#sound{
+#sound {
   justify-content: center;
 }
 
-.game{
+.game {
   flex: 1;
   /* border: 2px solid black; */
   width: 100%;
-  
+
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.game-container{
+.game-container {
   /* border: 2px solid black; */
   width: fit-content;
 }
 
-.gameGrid{
+.gameGrid {
   display: grid;
 }
 
-.fourbyfour{
+.fourbyfour {
   grid-template-columns: repeat(4, 96px);
 }
 
-.fourbyfour .square{
+.fourbyfour .square {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -170,22 +170,22 @@ footer{
   border: 2px solid black;
 }
 
-.gameGrid .blank{
+.gameGrid .blank {
   width: 96px;
   height: 96px;
   cursor: default;
   border: none;
 }
 
-.threebythree{
+.threebythree {
   grid-template-columns: repeat(3, 96px);
 }
 
-.fivebyfive{
+.fivebyfive {
   grid-template-columns: repeat(5, 96px);
 }
 
-.extra{
+.extra {
   width: 100%;
   display: flex;
   justify-content: space-evenly;
@@ -195,22 +195,21 @@ footer{
   text-align: center;
 }
 
-
-footer{
+footer {
   background-color: #f9d5d3;
   color: #d11b1b;
   font-size: 1.3rem;
   padding: 10px;
 }
 
-#popup{
+#popup {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 50%;
   height: 50%;
-  
+
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -221,17 +220,16 @@ footer{
   /* justify-items: center; */
 }
 
-.content{
+.content {
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
 }
-.popups.show{
-
+.popups.show {
 }
 
-.top{
+.top {
   display: flex;
   /* justify-content: space-between; */
   position: relative;
@@ -240,14 +238,14 @@ footer{
   border-bottom: 2px solid red;
 }
 
-.popTop{
+.popTop {
   flex-grow: 1;
   text-align: center;
   /* border: 2px solid black; */
 }
 
-#closeBtn{
-  position:absolute;
+#closeBtn {
+  position: absolute;
   cursor: pointer;
   border: none;
   background: transparent;
@@ -258,7 +256,7 @@ footer{
   padding: 5px;
 }
 
-.words{
+.words {
   width: 100%;
   display: flex;
   /* text-align: center; */
@@ -268,7 +266,7 @@ footer{
   /* border: 2px solid black; */
 }
 
-.words span{
+.words span {
   /* border: 2px solid black; */
   display: block;
 }
