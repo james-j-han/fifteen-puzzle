@@ -26,6 +26,7 @@ const closeHowToButton = document.getElementById("closeHowToBtn");
 const closeChooseImageButton = document.getElementById("closeChooseImageBtn");
 const closeDifficultyButton = document.getElementById("closeDifficultyButton");
 const startGameButton = document.getElementById("start-game-button");
+const resetGameButton = document.getElementById("reset-game-button");
 const howToContent = document.getElementById("how-to-content");
 const aboutContent = document.getElementById("about-content");
 const chooseImageContent = document.getElementById("choose-image-content");
@@ -54,6 +55,8 @@ const difficulties = document.querySelectorAll(".difficulty-button");
 const gameGrid = document.getElementById("game-grid");
 const shuffleSlider = document.getElementById("shuffle-slider");
 const shuffleValue = document.getElementById("shuffle-value");
+const moveCountElement = document.getElementById("moves");
+const timerElement = document.getElementById("timer");
 
 // Default image set to "image-1"
 let selectedImage = document.querySelector(".image-container.selected");
@@ -74,6 +77,10 @@ let blankTile = resetBlankTile();
 
 let isSoundOn = true;
 let numMoves = parseInt(shuffleSlider.value);
+let gameStarted = false;
+let moveCount = 0;
+let timerInterval;
+let timeElapsed = 0;
 
 // console.log(`Selected Image: ${selectedImage.id}`);
 // console.log(selectedImagePath);
@@ -81,13 +88,54 @@ let numMoves = parseInt(shuffleSlider.value);
 // console.log(difficulty.id);
 // console.log(gridSize);
 
+function startTimer() {
+  // Reset timer
+  timeElapsed = 0;
+
+  // Clear any existing timer
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timeElapsed++;
+    const minutes = Math.floor(timeElapsed / 60);
+    const seconds = timeElapsed % 60;
+    timerElement.textContent = `Timer: ${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  }, 1000);
+}
+
+function stopTimer() {
+  // Stop timer
+  clearInterval(timerInterval);
+}
+
+function updateMoveLabel(moveCount) {
+  moveCountElement.textContent = `Total # of Moves: ${moveCount}`;
+}
+
+function toggleControls(disable) {
+  // document
+  //   .querySelectorAll("#imageChoiceBtn, #difficultyBtn, #shuffle-slider, #start-game-button")
+  //   .forEach((element) => {
+  //     element.classList.toggle("disabled", disable);
+  //   });
+  chooseImageButton.classList.toggle("disabled", disable);
+  chooseDifficultyButton.classList.toggle("disabled", disable);
+  shuffleSlider.classList.toggle("disabled", disable);
+  startGameButton.classList.toggle("disabled", disable);
+  resetGameButton.classList.toggle("disabled", !disable);
+}
+
 shuffleSlider.addEventListener("input", () => {
+  if (gameStarted) return;
   numMoves = parseInt(shuffleSlider.value);
   shuffleValue.textContent = numMoves;
 });
 
 images.forEach((img) => {
   img.addEventListener("click", () => {
+    if (gameStarted) return;
+
     if (selectedImage) {
       selectedImage.classList.remove("selected");
     }
@@ -120,6 +168,8 @@ function generateSolvedBoard(gridSize) {
 
 difficulties.forEach((diff) => {
   diff.addEventListener("click", () => {
+    if (gameStarted) return;
+
     if (difficulty && difficulty !== diff) {
       difficulty.classList.remove("selected-diff");
     }
@@ -377,7 +427,7 @@ function moveTile(tileElement) {
     if (isSoundOn) {
       validSound.play();
     }
-    
+
     // Swap tile with the blank space in boardState
     boardState[blankTile.row][blankTile.col] = boardState[row][col];
     boardState[row][col] = null;
@@ -385,6 +435,9 @@ function moveTile(tileElement) {
     // Update blank tile position
     const prevBlank = { ...blankTile }; // Save current blank position
     blankTile = { row, col }; // Update blank position
+
+    moveCount++;
+    updateMoveLabel(moveCount);
 
     // Animate the tile to the blank position
     tileElement.style.transform = `translate(
@@ -419,6 +472,10 @@ gameGrid.addEventListener("click", (event) => {
 renderGameboard(boardState);
 
 startGameButton.addEventListener("click", () => {
+  gameStarted = true;
+  toggleControls(true);
+  startTimer();
+
   backgroundMusic
     .play()
     .then(() => console.log("Background music playing..."))
@@ -435,4 +492,25 @@ startGameButton.addEventListener("click", () => {
 
   renderGameboard(boardState);
   // createGameboard(shuffledPuzzle, selectedImagePath);
+});
+
+function resetGame() {
+  gameStarted = false;
+  toggleControls(false);
+  stopTimer();
+
+  backgroundMusic.pause();
+  backgroundMusic.currentTime = 0;
+
+  moveCount = 0;
+  updateMoveLabel(moveCount);
+
+  boardState = generateSolvedBoard(boardState.length);
+  blankTile = resetBlankTile();
+
+  renderGameboard(boardState);
+}
+
+resetGameButton.addEventListener("click", () => {
+  resetGame();
 });

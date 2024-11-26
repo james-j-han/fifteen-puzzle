@@ -373,6 +373,12 @@ footer {
   padding: 10px;
 }
 
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* @keyframes four-move-left{
   0% {
     transform: translateX(0);
