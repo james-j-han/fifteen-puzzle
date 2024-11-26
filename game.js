@@ -26,6 +26,17 @@ const chooseImageContent = document.getElementById("choose-image-content");
 const difficultyContent = document.getElementById("choose-difficulty-content");
 
 // Game elements
+let boardState = [
+  [1, 2, 3, 4],
+  [5, 6, 7, 8],
+  [9, 10, 11, 12],
+  [13, 14, 15, null], // null represents the blank tile
+];
+
+// console.log(`Initial Board State: ${boardState}`);
+console.table(boardState);
+// let blankTile = { row: 3, col: 3 }; // Initial position of the blank tile
+
 const diffMap = {
   easy: 3,
   normal: 4,
@@ -43,7 +54,15 @@ let selectedImagePath = `./images/${selectedImage.id}.png`;
 
 // Default difficulty set to "normal"
 let difficulty = document.querySelector(".difficulty-button.selected-diff");
-let gridSize = diffMap[difficulty.id];
+// let gridSize = diffMap[difficulty.id];
+
+let gridSize = boardState.length;
+
+function resetBlankTile() {
+  return { row: gridSize - 1, col: gridSize - 1 };
+}
+
+let blankTile = resetBlankTile();
 
 let isSoundOn = true;
 
@@ -63,10 +82,26 @@ images.forEach((img) => {
     selectedImage = img;
     selectedImagePath = `./images/${selectedImage.id}.png`;
 
-    createGameboard(gridSize, selectedImagePath);
+    renderGameboard(boardState);
     console.log(`${img.id}`);
   });
 });
+
+function generateSolvedBoard(gridSize) {
+  const board = [];
+  let counter = 1;
+
+  for (let i = 0; i < gridSize; i++) {
+    const row = [];
+    for (let j = 0; j < gridSize; j++) {
+      row.push(counter < gridSize * gridSize ? counter : null); // Use null for blank
+      counter++;
+    }
+    board.push(row);
+  }
+
+  return board;
+}
 
 difficulties.forEach((diff) => {
   diff.addEventListener("click", () => {
@@ -80,8 +115,12 @@ difficulties.forEach((diff) => {
     const selectedDiff = diff.id;
     gridSize = diffMap[selectedDiff];
 
-    createGameboard(gridSize, selectedImagePath);
+    boardState = generateSolvedBoard(gridSize);
+    blankTile = resetBlankTile();
+
+    renderGameboard(boardState);
     console.log(`${diff.id}`);
+    console.table(boardState);
   });
 });
 
@@ -187,53 +226,171 @@ chooseDifficultyPopup.addEventListener("click", (event) => {
   }
 });
 
-function createGameboard(size, image) {
-  gameGrid.innerHTML = "";
-  gameGrid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-  gameGrid.style.gridTemplateRows = `repeat(${size}, 1fr)`;
-
-  const totalTiles = size * size;
-  const tileSize = 400 / size;
-
-  // console.log(`Total # of tiles: ${totalTiles}`);
-  // console.log(`Tile size: ${tileSize}`);
-
-  for (let i = 1; i < totalTiles; i++) {
-    const tile = document.createElement("div");
-    tile.classList.add("square");
-    tile.textContent = i;
-
-    // Map each tile to specific portion of image
-    const row = Math.floor((i - 1) / size);
-    // console.log(`row: ${row}`);
-
-    const col = (i - 1) % size;
-    // console.log(`col: ${col}`);
-
-    const img = `url('${image}')`;
-    // console.log(`image: ${img}`);
-
-    tile.style.backgroundImage = `url("${image}")`;
-    tile.style.backgroundPosition = `-${col * tileSize}px -${row * tileSize}px`;
-    tile.style.backgroundSize = `${400}px ${400}px`;
-
-    console.log(tile);
-
-    gameGrid.appendChild(tile);
-  }
-
-  const blankTile = document.createElement("div");
-  blankTile.classList.add("square", "blank");
-  gameGrid.appendChild(blankTile);
-}
-
 /**
+ * GAME LOGIC
  * Start a new game
  *
  * TODO
  * Disable options from affecting gameboard after game starts
  * Reset timer and move count
  */
+
+function shuffle(gridSize, numMoves) {
+  const directions = [
+    { row: -1, col: 0 }, // Up
+    { row: 1, col: 0 },  // Down
+    { row: 0, col: -1 }, // Left
+    { row: 0, col: 1 },  // Right
+  ];
+
+  // Initialize the puzzle in the solved state
+  const puzzle = [];
+  let blankPosition = resetBlankTile();
+  // let blankPosition = { row: gridSize - 1, col: gridSize - 1 }; // Start with blank in the bottom-right
+
+  let counter = 1;
+  for (let i = 0; i < gridSize; i++) {
+    puzzle.push([]);
+    for (let j = 0; j < gridSize; j++) {
+      puzzle[i][j] = counter < gridSize * gridSize ? counter : null; // Use null for blank
+      counter++;
+    }
+  }
+
+  let lastMove = null;
+
+  // Perform backward shuffle moves
+  for (let move = 0; move < numMoves; move++) {
+    const validMoves = directions
+      .map((dir) => ({
+        row: blankPosition.row + dir.row,
+        col: blankPosition.col + dir.col,
+        reverse: { row: -dir.row, col: -dir.col },
+      }))
+      .filter(
+        (pos) =>
+          pos.row >= 0 &&
+          pos.row < gridSize &&
+          pos.col >= 0 &&
+          pos.col < gridSize &&
+          (!lastMove ||
+            pos.row !== blankPosition.row + lastMove.row ||
+            pos.col !== blankPosition.col + lastMove.col)
+      );
+
+    // Pick a random valid move
+    const randomMove =
+      validMoves[Math.floor(Math.random() * validMoves.length)];
+
+    // Swap the blank with the chosen tile
+    puzzle[blankPosition.row][blankPosition.col] =
+      puzzle[randomMove.row][randomMove.col];
+    puzzle[randomMove.row][randomMove.col] = null;
+
+    // Update the blank position
+    blankPosition = { row: randomMove.row, col: randomMove.col };
+
+    // Store the reverse of the move to avoid undoing it next time
+    lastMove = randomMove.reverse;
+  }
+
+  // Update global boardState and blankTile
+  boardState = puzzle; // Update the global board state
+  blankTile = blankPosition; // Update the blank tile position
+  
+}
+
+function renderGameboard(boardState) {
+  // Clear grid
+  gameGrid.innerHTML = "";
+
+  // Need to adjust gameGrid when changing difficulty
+  gameGrid.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+  gameGrid.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
+
+  boardState.forEach((row, rowIndex) => {
+    row.forEach((tile, colIndex) => {
+      const square = document.createElement("div");
+      square.classList.add("square");
+      square.dataset.row = rowIndex;
+      square.dataset.col = colIndex;
+
+      if (tile !== null) {
+        square.textContent = tile;
+        square.style.backgroundImage = `url("${selectedImagePath}")`;
+
+        // The size of grid will adjust based on length of puzzle and each tile's size is adjusted
+        const gridSize = boardState.length;
+        const tileSize = 400 / gridSize;
+        const originalRow = Math.floor((tile - 1) / gridSize);
+        const originalCol = (tile - 1) % gridSize;
+
+        square.style.backgroundSize = `${400}px ${400}px`;
+        square.style.backgroundPosition = `-${originalCol * tileSize}px -${originalRow * tileSize}px`;
+      } else {
+        square.classList.add("blank");
+      }
+
+      gameGrid.appendChild(square);
+    });
+  });
+}
+
+// Function to check if a tile is adjacent to the blank tile
+function isValidMove(row, col) {
+  const rowDiff = Math.abs(row - blankTile.row);
+  console.log(`Row diff: ${rowDiff}`);
+  
+  const colDiff = Math.abs(col - blankTile.col);
+  console.log(`Col Diff: ${colDiff}`);
+  
+  return (rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1);
+}
+
+// Function to move a tile
+function moveTile(tileElement) {
+  const row = parseInt(tileElement.dataset.row);
+  
+  const col = parseInt(tileElement.dataset.col);
+
+  console.log(`Clicked: (${row}, ${col})`);
+  
+  
+
+  if (!isValidMove(row, col)) return; // Ignore invalid moves
+
+  // Swap tile with the blank space in boardState
+  boardState[blankTile.row][blankTile.col] = boardState[row][col];
+  boardState[row][col] = null;
+
+  // Update blank tile position
+  const prevBlank = { ...blankTile }; // Save current blank position
+  blankTile = { row, col }; // Update blank position
+
+  // Animate the tile to the blank position
+  tileElement.style.transform = `translate(
+    ${(prevBlank.col - col) * 100}%,
+    ${(prevBlank.row - row) * 100}%
+  )`;
+
+  // After animation, re-render the gameboard
+  setTimeout(() => renderGameboard(boardState), 300);
+}
+
+// Event listener for tile clicks
+gameGrid.addEventListener("click", (event) => {
+  const tileElement = event.target;
+
+  if (!tileElement.classList.contains("square") || tileElement.classList.contains("blank")) {
+    return; // Ignore clicks on non-tiles or the blank tile
+  }
+
+  moveTile(tileElement);
+});
+
+// Initial render
+renderGameboard(boardState);
+
 startGameButton.addEventListener("click", () => {
   backgroundMusic
     .play()
@@ -242,5 +399,14 @@ startGameButton.addEventListener("click", () => {
       console.log("Error playing music: ", error);
     });
 
-  createGameboard(gridSize, selectedImagePath);
+  // Shuffle puzzle based on numMoves
+  const numMoves = 3; // Number of backward shuffle moves
+  shuffle(gridSize, numMoves);
+  // const shuffledPuzzle = shuffle(gridSize, numMoves);
+  // blankTile = { row: gridSize - 1, col: gridSize - 1 };
+  console.table(boardState);
+  console.log(`Blank Tile Location: (${blankTile.row}, ${blankTile.col})`);
+  
+  renderGameboard(boardState);
+  // createGameboard(shuffledPuzzle, selectedImagePath);
 });
