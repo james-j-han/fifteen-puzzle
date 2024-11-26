@@ -5,9 +5,10 @@ html {
   margin: 0;
   padding: 0;
   height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  overflow: auto;
+  /* overflow: auto; */
 
   color: #333333;
   background-color: #f9d5d3;
@@ -28,6 +29,25 @@ header {
   color: #ffffff;
 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.main {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: 50%;
+  height: 100%;
+
+  justify-content: space-between;
+  align-items: center;
+
+  display: flex;
+  flex-direction: column;
 }
 
 .hide {
@@ -62,26 +82,6 @@ header {
 .buttons .active {
   background-color: #a33942;
   color: #e0e0e0;
-}
-
-.main {
-  flex: 1;
-  justify-items: center;
-  align-items: center;
-  /* border: 2px solid black; */
-}
-
-.container {
-  /* border: 2px solid black; */
-
-  width: 50%;
-  height: 100%;
-
-  justify-items: center;
-  align-items: center;
-
-  display: flex;
-  flex-direction: column;
 }
 
 .choices {
