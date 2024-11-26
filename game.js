@@ -50,10 +50,9 @@ let gridSize = diffMap[difficulty.id];
 // console.log(difficulty.id);
 // console.log(gridSize);
 
-
 images.forEach((img) => {
   img.addEventListener("click", () => {
-    if (selectedImage && selectedImage !== img) {
+    if (selectedImage) {
       selectedImage.classList.remove("selected");
     }
 
