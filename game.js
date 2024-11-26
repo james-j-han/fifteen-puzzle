@@ -23,12 +23,32 @@ const aboutContent = document.getElementById("about-content");
 const chooseImageContent = document.getElementById("choose-image-content");
 const difficultyContent = document.getElementById("choose-difficulty-content");
 
+const diffMap = {
+  easy: 3,
+  normal: 4,
+  hard: 5,
+};
+
 const images = document.querySelectorAll(".image-container");
 const difficulties = document.querySelectorAll(".difficulty-button");
 
+const gameGrid = document.getElementById("game-grid");
+
 // Game elements
-let selectedImage = null;
+// Default image set to "image-1"
+let selectedImage = document.querySelector(".image-container.selected");
+
+let selectedImagePath = `./images/${selectedImage.id}.png`;
+
+// Default difficulty set to "normal"
 let difficulty = document.querySelector(".difficulty-button.selected-diff");
+let gridSize = diffMap[difficulty.id];
+
+// console.log(`Selected Image: ${selectedImage.id}`);
+// console.log(selectedImagePath);
+// console.log(selectedImage);
+// console.log(difficulty.id);
+// console.log(gridSize);
 
 images.forEach((img) => {
   img.addEventListener("click", () => {
@@ -38,6 +58,9 @@ images.forEach((img) => {
 
     img.classList.add("selected");
     selectedImage = img;
+    selectedImagePath = `./images/${selectedImage.id}.png`;
+
+    createGameboard(gridSize, selectedImagePath);
     console.log(`${img.id}`);
   });
 });
@@ -50,9 +73,13 @@ difficulties.forEach((diff) => {
 
     diff.classList.add("selected-diff");
     difficulty = diff;
+
+    const selectedDiff = diff.id;
+    gridSize = diffMap[selectedDiff];
+
+    createGameboard(gridSize, selectedImagePath);
     console.log(`${diff.id}`);
-    
-  })
+  });
 });
 
 // Toggle music
@@ -151,6 +178,46 @@ chooseDifficultyPopup.addEventListener("click", (event) => {
   }
 });
 
+function createGameboard(size, image) {
+  gameGrid.innerHTML = "";
+  gameGrid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+  gameGrid.style.gridTemplateRows = `repeat(${size}, 1fr)`;
+
+  const totalTiles = size * size;
+  const tileSize = 400 / size;
+
+  // console.log(`Total # of tiles: ${totalTiles}`);
+  // console.log(`Tile size: ${tileSize}`);
+
+  for (let i = 1; i < totalTiles; i++) {
+    const tile = document.createElement("div");
+    tile.classList.add("square");
+    tile.textContent = i;
+
+    // Map each tile to specific portion of image
+    const row = Math.floor((i - 1) / size);
+    // console.log(`row: ${row}`);
+
+    const col = (i - 1) % size;
+    // console.log(`col: ${col}`);
+
+    const img = `url('${image}')`;
+    // console.log(`image: ${img}`);
+
+    tile.style.backgroundImage = `url("${image}")`;
+    tile.style.backgroundPosition = `-${col * tileSize}px -${row * tileSize}px`;
+    tile.style.backgroundSize = `${400}px ${400}px`;
+
+    console.log(tile);
+
+    gameGrid.appendChild(tile);
+  }
+
+  const blankTile = document.createElement("div");
+  blankTile.classList.add("square", "blank");
+  gameGrid.appendChild(blankTile);
+}
+
 /**
  * Start a new game
  *
@@ -165,4 +232,6 @@ startGameButton.addEventListener("click", () => {
     .catch((error) => {
       console.log("Error playing music: ", error);
     });
+
+  createGameboard(gridSize, selectedImagePath);
 });
