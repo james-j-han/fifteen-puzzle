@@ -187,53 +187,143 @@ chooseDifficultyPopup.addEventListener("click", (event) => {
   }
 });
 
-function createGameboard(size, image) {
-  gameGrid.innerHTML = "";
-  gameGrid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-  gameGrid.style.gridTemplateRows = `repeat(${size}, 1fr)`;
-
-  const totalTiles = size * size;
-  const tileSize = 400 / size;
-
-  // console.log(`Total # of tiles: ${totalTiles}`);
-  // console.log(`Tile size: ${tileSize}`);
-
-  for (let i = 1; i < totalTiles; i++) {
-    const tile = document.createElement("div");
-    tile.classList.add("square");
-    tile.textContent = i;
-
-    // Map each tile to specific portion of image
-    const row = Math.floor((i - 1) / size);
-    // console.log(`row: ${row}`);
-
-    const col = (i - 1) % size;
-    // console.log(`col: ${col}`);
-
-    const img = `url('${image}')`;
-    // console.log(`image: ${img}`);
-
-    tile.style.backgroundImage = `url("${image}")`;
-    tile.style.backgroundPosition = `-${col * tileSize}px -${row * tileSize}px`;
-    tile.style.backgroundSize = `${400}px ${400}px`;
-
-    console.log(tile);
-
-    gameGrid.appendChild(tile);
-  }
-
-  const blankTile = document.createElement("div");
-  blankTile.classList.add("square", "blank");
-  gameGrid.appendChild(blankTile);
-}
-
 /**
+ * GAME LOGIC
  * Start a new game
  *
  * TODO
  * Disable options from affecting gameboard after game starts
  * Reset timer and move count
  */
+
+function createGameboard(shuffledPuzzle, image) {
+  gameGrid.innerHTML = "";
+
+  shuffledPuzzle.forEach((row, rowIndex) => {
+    row.forEach((tile, colIndex) => {
+      // Create an empty div element and apply .square CSS
+      const square = document.createElement("div");
+      square.classList.add("square");
+
+      // If tile is not null, set element to tile and the image portion to it
+      if (tile !== null) {
+        square.textContent = tile;
+        square.style.backgroundImage = `url("${image}")`;
+
+        // The size of grid will adjust based on length of puzzle and each tile's size is adjusted
+        gridSize = shuffledPuzzle.length;
+        const tileSize = 400 / gridSize;
+        square.style.backgroundSize = `${400}px ${400}px`;
+        square.style.backgroundPosition = `-${colIndex * tileSize}px -${rowIndex * tileSize}px`;
+      } else {
+        square.classList.add("blank");
+      }
+
+      gameGrid.appendChild(square);
+    })
+  })
+}
+
+// function createGameboard(size, image) {
+//   gameGrid.innerHTML = "";
+//   gameGrid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+//   gameGrid.style.gridTemplateRows = `repeat(${size}, 1fr)`;
+
+//   const totalTiles = size * size;
+//   const tileSize = 400 / size;
+
+//   // console.log(`Total # of tiles: ${totalTiles}`);
+//   // console.log(`Tile size: ${tileSize}`);
+
+//   for (let i = 1; i < totalTiles; i++) {
+//     const tile = document.createElement("div");
+//     tile.classList.add("square");
+//     tile.textContent = i;
+
+//     // Map each tile to specific portion of image
+//     const row = Math.floor((i - 1) / size);
+//     // console.log(`row: ${row}`);
+
+//     const col = (i - 1) % size;
+//     // console.log(`col: ${col}`);
+
+//     const img = `url('${image}')`;
+//     // console.log(`image: ${img}`);
+
+//     tile.style.backgroundImage = `url("${image}")`;
+//     tile.style.backgroundPosition = `-${col * tileSize}px -${row * tileSize}px`;
+//     tile.style.backgroundSize = `${400}px ${400}px`;
+
+//     // console.log(tile);
+
+//     gameGrid.appendChild(tile);
+//   }
+
+//   const blankTile = document.createElement("div");
+//   blankTile.classList.add("square", "blank");
+//   gameGrid.appendChild(blankTile);
+// }
+
+function shuffle(gridSize, numMoves) {
+  const directions = [
+    { row: -1, col: 0 }, // Up
+    { row: 1, col: 0 }, // Down
+    { row: 0, col: -1 }, // Left
+    { row: 0, col: 1 }, // Right
+  ];
+
+  // Initialize the puzzle in the solved state
+  const puzzle = [];
+  let blankPosition = { row: gridSize - 1, col: gridSize - 1 }; // Start with blank in the bottom-right
+
+  let counter = 1;
+  for (let i = 0; i < gridSize; i++) {
+    puzzle.push([]);
+    for (let j = 0; j < gridSize; j++) {
+      puzzle[i][j] = counter < gridSize * gridSize ? counter : null; // Use null for blank
+      counter++;
+    }
+  }
+
+  let lastMove = null;
+
+  for (let move = 0; move < numMoves; move++) {
+    const validMoves = directions
+      .map((dir) => ({
+        row: blankPosition.row + dir.row,
+        col: blankPosition.col + dir.col,
+        reverse: { row: -dir.row, col: -dir.col },
+      }))
+      .filter(
+        (pos) =>
+          pos.row >= 0 &&
+          pos.row < gridSize &&
+          pos.col >= 0 &&
+          pos.col < gridSize &&
+          (!lastMove ||
+            pos.row !== blankPosition.row + lastMove.row ||
+            pos.col !== blankPosition.col + lastMove.col)
+      );
+
+    // Pick a random valid move
+    const randomMove =
+      validMoves[Math.floor(Math.random() * validMoves.length)];
+
+    // Swap the blank with the chosen tile
+    puzzle[blankPosition.row][blankPosition.col] =
+      puzzle[randomMove.row][randomMove.col];
+    puzzle[randomMove.row][randomMove.col] = null;
+
+    // Update the blank position
+    blankPosition = { row: randomMove.row, col: randomMove.col };
+
+    // Store the reverse of the move to avoid undoing it next time
+    lastMove = randomMove.reverse;
+  }
+
+  return puzzle;
+}
+
 startGameButton.addEventListener("click", () => {
   backgroundMusic
     .play()
@@ -242,5 +332,9 @@ startGameButton.addEventListener("click", () => {
       console.log("Error playing music: ", error);
     });
 
-  createGameboard(gridSize, selectedImagePath);
+  // Shuffle puzzle based on numMoves
+  const numMoves = 3; // Number of backward shuffle moves
+  const shuffledPuzzle = shuffle(gridSize, numMoves);
+  console.log(`Shuffled Puzzle: ${shuffledPuzzle}`);
+  createGameboard(shuffledPuzzle, selectedImagePath);
 });
