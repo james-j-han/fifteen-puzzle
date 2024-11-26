@@ -179,10 +179,17 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 24px;
   font-weight: bold;
   border: 2px solid #000;
   cursor: pointer;
+  color: white;
+  font-size: 3rem;
+  -webkit-text-stroke: 3px black;
+  opacity: 0.5;
+}
+
+.square:hover {
+  opacity: 1;
 }
 
 .blank {
@@ -277,6 +284,7 @@ ul > li ul li {
   display: flex;
   position: relative;
   height: 40px;
+  min-width: 340px;
   justify-content: center;
   align-items: center;
   padding: 20px;
@@ -329,13 +337,7 @@ footer {
   padding: 10px;
 }
 
-
-
-
-
-
-
-@keyframes four-move-left{
+/* @keyframes four-move-left{
   0% {
     transform: translateX(0);
   }
@@ -544,5 +546,4 @@ footer {
 
 .five-move-down{
   animation: five-move-down 0.3s ease-in-out forwards
-}
-
+} */
