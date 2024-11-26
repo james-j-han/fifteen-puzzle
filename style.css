@@ -40,7 +40,7 @@ header {
 }
 
 .container {
-  width: 50%;
+  width: 70%;
   height: 100%;
 
   justify-content: space-between;
@@ -201,14 +201,25 @@ header {
   border: none;
 }
 
-.extra {
-  width: 100%;
+.extras-container {
   display: flex;
-  justify-content: space-evenly;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.info-container {
+  display: flex;
+  width: 50%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.moves,
+.timer {
   font-size: 1.5rem;
-  text-align: center;
 }
 
 .image-container {
@@ -334,9 +345,30 @@ ul > li ul li {
   box-sizing: border-box;
 }
 
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+#shuffle-slider {
+  width: 200px;
+  cursor: pointer;
+}
+
+#shuffle-value {
+  font-weight: bold;
+  color: #333;
+}
+
 footer {
   text-align: center;
-  color: #d11b1b;
+  background-color: #c02f3b;
+  border-top: 2px solid #a33c44;
+  color: #ffffff;
   font-size: 1.3rem;
   padding: 10px;
 }

@@ -3,6 +3,12 @@ const backgroundMusic = document.getElementById("background-music");
 backgroundMusic.volume = 0.2;
 const soundButton = document.getElementById("soundBtn");
 const soundIcon = document.getElementById("sound-icon");
+const validSound = new Audio("./sounds/valid.wav");
+const invalidSound = new Audio("./sounds/invalid.wav");
+
+// Preload to prevent delay in playing sound
+validSound.load();
+invalidSound.load();
 
 // Layout functionality elements
 const aboutButton = document.getElementById("aboutBtn");
@@ -46,6 +52,8 @@ const diffMap = {
 const images = document.querySelectorAll(".image-container");
 const difficulties = document.querySelectorAll(".difficulty-button");
 const gameGrid = document.getElementById("game-grid");
+const shuffleSlider = document.getElementById("shuffle-slider");
+const shuffleValue = document.getElementById("shuffle-value");
 
 // Default image set to "image-1"
 let selectedImage = document.querySelector(".image-container.selected");
@@ -65,12 +73,18 @@ function resetBlankTile() {
 let blankTile = resetBlankTile();
 
 let isSoundOn = true;
+let numMoves = parseInt(shuffleSlider.value);
 
 // console.log(`Selected Image: ${selectedImage.id}`);
 // console.log(selectedImagePath);
 // console.log(selectedImage);
 // console.log(difficulty.id);
 // console.log(gridSize);
+
+shuffleSlider.addEventListener("input", () => {
+  numMoves = parseInt(shuffleSlider.value);
+  shuffleValue.textContent = numMoves;
+});
 
 images.forEach((img) => {
   img.addEventListener("click", () => {
@@ -83,6 +97,7 @@ images.forEach((img) => {
     selectedImagePath = `./images/${selectedImage.id}.png`;
 
     renderGameboard(boardState);
+    chooseImagePopup.classList.add("hide");
     console.log(`${img.id}`);
   });
 });
@@ -121,6 +136,7 @@ difficulties.forEach((diff) => {
     renderGameboard(boardState);
     console.log(`${diff.id}`);
     console.table(boardState);
+    chooseDifficultyPopup.classList.add("hide");
   });
 });
 
@@ -238,9 +254,9 @@ chooseDifficultyPopup.addEventListener("click", (event) => {
 function shuffle(gridSize, numMoves) {
   const directions = [
     { row: -1, col: 0 }, // Up
-    { row: 1, col: 0 },  // Down
+    { row: 1, col: 0 }, // Down
     { row: 0, col: -1 }, // Left
-    { row: 0, col: 1 },  // Right
+    { row: 0, col: 1 }, // Right
   ];
 
   // Initialize the puzzle in the solved state
@@ -297,7 +313,6 @@ function shuffle(gridSize, numMoves) {
   // Update global boardState and blankTile
   boardState = puzzle; // Update the global board state
   blankTile = blankPosition; // Update the blank tile position
-  
 }
 
 function renderGameboard(boardState) {
@@ -326,7 +341,9 @@ function renderGameboard(boardState) {
         const originalCol = (tile - 1) % gridSize;
 
         square.style.backgroundSize = `${400}px ${400}px`;
-        square.style.backgroundPosition = `-${originalCol * tileSize}px -${originalRow * tileSize}px`;
+        square.style.backgroundPosition = `-${originalCol * tileSize}px -${
+          originalRow * tileSize
+        }px`;
       } else {
         square.classList.add("blank");
       }
@@ -340,48 +357,58 @@ function renderGameboard(boardState) {
 function isValidMove(row, col) {
   const rowDiff = Math.abs(row - blankTile.row);
   console.log(`Row diff: ${rowDiff}`);
-  
+
   const colDiff = Math.abs(col - blankTile.col);
   console.log(`Col Diff: ${colDiff}`);
-  
+
   return (rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1);
 }
 
 // Function to move a tile
 function moveTile(tileElement) {
   const row = parseInt(tileElement.dataset.row);
-  
+
   const col = parseInt(tileElement.dataset.col);
 
   console.log(`Clicked: (${row}, ${col})`);
-  
-  
 
-  if (!isValidMove(row, col)) return; // Ignore invalid moves
+  // Ignore invalid moves and play invalid sound
+  if (isValidMove(row, col)) {
+    if (isSoundOn) {
+      validSound.play();
+    }
+    
+    // Swap tile with the blank space in boardState
+    boardState[blankTile.row][blankTile.col] = boardState[row][col];
+    boardState[row][col] = null;
 
-  // Swap tile with the blank space in boardState
-  boardState[blankTile.row][blankTile.col] = boardState[row][col];
-  boardState[row][col] = null;
+    // Update blank tile position
+    const prevBlank = { ...blankTile }; // Save current blank position
+    blankTile = { row, col }; // Update blank position
 
-  // Update blank tile position
-  const prevBlank = { ...blankTile }; // Save current blank position
-  blankTile = { row, col }; // Update blank position
-
-  // Animate the tile to the blank position
-  tileElement.style.transform = `translate(
+    // Animate the tile to the blank position
+    tileElement.style.transform = `translate(
     ${(prevBlank.col - col) * 100}%,
     ${(prevBlank.row - row) * 100}%
   )`;
 
-  // After animation, re-render the gameboard
-  setTimeout(() => renderGameboard(boardState), 300);
+    // After animation, re-render the gameboard
+    setTimeout(() => renderGameboard(boardState), 300);
+  } else {
+    if (isSoundOn) {
+      invalidSound.play();
+    }
+  }
 }
 
 // Event listener for tile clicks
 gameGrid.addEventListener("click", (event) => {
   const tileElement = event.target;
 
-  if (!tileElement.classList.contains("square") || tileElement.classList.contains("blank")) {
+  if (
+    !tileElement.classList.contains("square") ||
+    tileElement.classList.contains("blank")
+  ) {
     return; // Ignore clicks on non-tiles or the blank tile
   }
 
@@ -400,13 +427,12 @@ startGameButton.addEventListener("click", () => {
     });
 
   // Shuffle puzzle based on numMoves
-  const numMoves = 3; // Number of backward shuffle moves
   shuffle(gridSize, numMoves);
   // const shuffledPuzzle = shuffle(gridSize, numMoves);
   // blankTile = { row: gridSize - 1, col: gridSize - 1 };
   console.table(boardState);
   console.log(`Blank Tile Location: (${blankTile.row}, ${blankTile.col})`);
-  
+
   renderGameboard(boardState);
   // createGameboard(shuffledPuzzle, selectedImagePath);
 });
