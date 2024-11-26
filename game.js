@@ -26,6 +26,7 @@ const closeHowToButton = document.getElementById("closeHowToBtn");
 const closeChooseImageButton = document.getElementById("closeChooseImageBtn");
 const closeDifficultyButton = document.getElementById("closeDifficultyButton");
 const startGameButton = document.getElementById("start-game-button");
+const resetGameButton = document.getElementById("reset-game-button");
 const howToContent = document.getElementById("how-to-content");
 const aboutContent = document.getElementById("about-content");
 const chooseImageContent = document.getElementById("choose-image-content");
@@ -74,6 +75,7 @@ let blankTile = resetBlankTile();
 
 let isSoundOn = true;
 let numMoves = parseInt(shuffleSlider.value);
+let gameStarted = false;
 
 // console.log(`Selected Image: ${selectedImage.id}`);
 // console.log(selectedImagePath);
@@ -81,13 +83,29 @@ let numMoves = parseInt(shuffleSlider.value);
 // console.log(difficulty.id);
 // console.log(gridSize);
 
+function toggleControls(disable) {
+  // document
+  //   .querySelectorAll("#imageChoiceBtn, #difficultyBtn, #shuffle-slider, #start-game-button")
+  //   .forEach((element) => {
+  //     element.classList.toggle("disabled", disable);
+  //   });
+  chooseImageButton.classList.toggle("disabled", disable);
+  chooseDifficultyButton.classList.toggle("disabled", disable);
+  shuffleSlider.classList.toggle("disabled", disable);
+  startGameButton.classList.toggle("disabled", disable);
+  resetGameButton.classList.toggle("disabled", !disable);
+}
+
 shuffleSlider.addEventListener("input", () => {
+  if (gameStarted) return;
   numMoves = parseInt(shuffleSlider.value);
   shuffleValue.textContent = numMoves;
 });
 
 images.forEach((img) => {
   img.addEventListener("click", () => {
+    if (gameStarted) return;
+
     if (selectedImage) {
       selectedImage.classList.remove("selected");
     }
@@ -120,6 +138,8 @@ function generateSolvedBoard(gridSize) {
 
 difficulties.forEach((diff) => {
   diff.addEventListener("click", () => {
+    if (gameStarted) return;
+
     if (difficulty && difficulty !== diff) {
       difficulty.classList.remove("selected-diff");
     }
@@ -377,7 +397,7 @@ function moveTile(tileElement) {
     if (isSoundOn) {
       validSound.play();
     }
-    
+
     // Swap tile with the blank space in boardState
     boardState[blankTile.row][blankTile.col] = boardState[row][col];
     boardState[row][col] = null;
@@ -419,6 +439,9 @@ gameGrid.addEventListener("click", (event) => {
 renderGameboard(boardState);
 
 startGameButton.addEventListener("click", () => {
+  gameStarted = true;
+  toggleControls(true);
+
   backgroundMusic
     .play()
     .then(() => console.log("Background music playing..."))
@@ -436,3 +459,20 @@ startGameButton.addEventListener("click", () => {
   renderGameboard(boardState);
   // createGameboard(shuffledPuzzle, selectedImagePath);
 });
+
+function resetGame() {
+  gameStarted = false;
+  toggleControls(false);
+
+  backgroundMusic.pause();
+  backgroundMusic.currentTime = 0;
+
+  boardState = generateSolvedBoard(boardState.length);
+  blankTile = resetBlankTile();
+
+  renderGameboard(boardState);
+}
+
+resetGameButton.addEventListener("click", () => {
+  resetGame();
+})
