@@ -57,13 +57,19 @@
         </div>
 
         <!-- Extra Section -->
-        <div class="extra">
-          <div id="moves" class="moves">
-            Number of Moves: <span id="numMoves">0</span>
+        <div class="extras-container">
+          <div class="slider-container">
+            <label for="shuffle-slider"># of Moves to Shuffle</label>
+            <input id="shuffle-slider" type="range" min="1" max="100" value="50" />
+            <span id="shuffle-value">50</span>
           </div>
-
-          <div id="timer" class="timer">
-            Timer: <span class="time">0:00</span>
+          <div class="info-container">
+            <div class="moves" id="moves">
+              Total # of Moves: <span id="numMoves">0</span>
+            </div>
+            <div class="timer" id="tiemr">
+              Timer: <span id="timer">00:00</span>
+            </div>
           </div>
         </div>
       </div>
@@ -288,6 +294,8 @@
       <source src="./music/time_for_adventure.mp3" type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
+    <audio id="valid-sound" src="./sounds/valid.wav"></audio>
+    <audio id="invalid-sound" src="./sounds/invalid.wav"></audio>
 
     <!-- JavaScript Section -->
     <script src="game.js"></script>
