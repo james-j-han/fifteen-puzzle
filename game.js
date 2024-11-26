@@ -25,23 +25,14 @@ const difficultyContent = document.getElementById("choose-difficulty-content");
 
 const images = document.querySelectorAll(".image-container");
 const difficulties = document.querySelectorAll(".difficulty-button");
-const gridSize = 4;
-
-const gameGrid = document.getElementById("game-grid");
 
 // Game elements
-// Default image set to "image-1"
-let selectedImage = `./images/${document.getElementById("image-1").id}.png`;
-
-// Default difficulty set to "normal"
+let selectedImage = null;
 let difficulty = document.querySelector(".difficulty-button.selected-diff");
-
-console.log(selectedImage);
-console.log(difficulty.id);
 
 images.forEach((img) => {
   img.addEventListener("click", () => {
-    if (selectedImage && selectedImage !== img) {
+    if (selectedImage) {
       selectedImage.classList.remove("selected");
     }
 
@@ -160,34 +151,6 @@ chooseDifficultyPopup.addEventListener("click", (event) => {
   }
 });
 
-function createGameboard(size, image) {
-  gameGrid.innerHTML = "";
-  gameGrid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-  gameGrid.style.gridTemplateRows = `repeat(${size}, 1fr)`;
-
-  const totalTiles = size * size;
-  const tileSize = 400 / size;
-
-  for (let i = 1; i < totalTiles; i++) {
-    const tile = document.createElement("div");
-    tile.classList.add("square");
-    tile.textContent = 1;
-
-    // Map each tile to specific portion of image
-    const row = Math.floor((i - 1) / size);
-    const col = (i - 1) % size;
-    tile.style.backgroundImage = `url${image}`;
-    tile.style.backgroundPosition = `-${col * tileSize}px -${row * tileSize}px`;
-    tile.style.backgroundSize = `${400}px ${400}px`;
-
-    gameGrid.appendChild(tile);
-  }
-
-  const blankTile = document.createElement("div");
-  blankTile.classList.add("square", "blank");
-  gameGrid.appendChild(blankTile);
-}
-
 /**
  * Start a new game
  *
@@ -202,6 +165,4 @@ startGameButton.addEventListener("click", () => {
     .catch((error) => {
       console.log("Error playing music: ", error);
     });
-  
-    createGameboard(gridSize, selectedImage);
 });
