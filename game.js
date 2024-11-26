@@ -1,8 +1,8 @@
-// RULESET TEST
-
 // Music elements
 const backgroundMusic = document.getElementById("background-music");
+backgroundMusic.volume = 0.2;
 const soundButton = document.getElementById("soundBtn");
+const soundIcon = document.getElementById("sound-icon");
 
 // Layout functionality elements
 const aboutButton = document.getElementById("aboutBtn");
@@ -25,6 +25,7 @@ const aboutContent = document.getElementById("about-content");
 const chooseImageContent = document.getElementById("choose-image-content");
 const difficultyContent = document.getElementById("choose-difficulty-content");
 
+// Game elements
 const diffMap = {
   easy: 3,
   normal: 4,
@@ -33,10 +34,8 @@ const diffMap = {
 
 const images = document.querySelectorAll(".image-container");
 const difficulties = document.querySelectorAll(".difficulty-button");
-
 const gameGrid = document.getElementById("game-grid");
 
-// Game elements
 // Default image set to "image-1"
 let selectedImage = document.querySelector(".image-container.selected");
 
@@ -45,6 +44,8 @@ let selectedImagePath = `./images/${selectedImage.id}.png`;
 // Default difficulty set to "normal"
 let difficulty = document.querySelector(".difficulty-button.selected-diff");
 let gridSize = diffMap[difficulty.id];
+
+let isSoundOn = true;
 
 // console.log(`Selected Image: ${selectedImage.id}`);
 // console.log(selectedImagePath);
@@ -85,10 +86,16 @@ difficulties.forEach((diff) => {
 });
 
 // Toggle music
-soundButton.addEventListener(
-  "click",
-  () => (backgroundMusic.muted = !backgroundMusic.muted)
-);
+soundButton.addEventListener("click", () => {
+  if (isSoundOn) {
+    soundIcon.src = "./icons/music-off.png";
+  } else {
+    soundIcon.src = "./icons/music-on.png";
+  }
+
+  backgroundMusic.muted = isSoundOn;
+  isSoundOn = !isSoundOn;
+});
 
 function hideHowToPlay() {
   howToPopup.classList.add("hide");
