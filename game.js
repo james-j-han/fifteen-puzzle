@@ -1,3 +1,5 @@
+// RULESET TEST
+
 // Music elements
 const backgroundMusic = document.getElementById("background-music");
 const soundButton = document.getElementById("soundBtn");
