@@ -379,6 +379,14 @@ footer {
   cursor: not-allowed;
 }
 
+/*Victory styling centered*/
+.centered-popup-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 /* @keyframes four-move-left{
   0% {
     transform: translateX(0);
