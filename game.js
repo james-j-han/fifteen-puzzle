@@ -514,3 +514,142 @@ function resetGame() {
 resetGameButton.addEventListener("click", () => {
   resetGame();
 });
+
+// Function to check if the puzzle is solved
+function isPuzzleSolved(boardState) {
+  const gridSize = boardState.length;
+  let counter = 1;
+
+  for (let i = 0; i < gridSize; i++) {
+    for (let j = 0; j < gridSize; j++) {
+      if (i === gridSize - 1 && j === gridSize - 1) {
+        return boardState[i][j] === null; // Last tile must be blank
+      }
+      if (boardState[i][j] !== counter) {
+        return false;
+      }
+      counter++;
+    }
+  }
+  return true;
+}
+
+// Function to display the solved notification
+function showSolvedNotification() {
+  const notification = document.createElement("div");
+  notification.className = "solved-notification";
+  notification.textContent = "Congratulations! You solved the puzzle!";
+  
+  document.body.appendChild(notification);
+
+  // Remove the notification after 3 seconds
+  setTimeout(() => {
+    notification.remove();
+  }, 3000);
+}
+
+// Modify moveTile function to check for solved state
+function moveTile(tileElement) {
+  const row = parseInt(tileElement.dataset.row);
+  const col = parseInt(tileElement.dataset.col);
+
+  if (isValidMove(row, col)) {
+    if (isSoundOn) validSound.play();
+
+    // Swap tile with the blank space in boardState
+    boardState[blankTile.row][blankTile.col] = boardState[row][col];
+    boardState[row][col] = null;
+
+    blankTile = { row, col };
+    moveCount++;
+    updateMoveLabel(moveCount);
+
+    setTimeout(() => {
+      renderGameboard(boardState);
+
+      // Check if the puzzle is solved
+      if (isPuzzleSolved(boardState)) {
+        stopTimer();
+        showSolvedNotification();
+      }
+    }, 300);
+  } else {
+    if (isSoundOn) invalidSound.play();
+  }
+}
+
+/*Win/ Solved Board Logic*/
+
+function showSolvedPopup() {
+  //Pop ups
+  const popupOverlay = document.createElement("div");
+  popupOverlay.id = "winPopup";
+  popupOverlay.className = "popup-overlay";
+
+  const popupContent = document.createElement("div");
+  popupContent.className = "popup-content";
+
+  const popupHeader = document.createElement("div");
+  popupHeader.className = "popup-header";
+
+  const popupTitle = document.createElement("h2");
+  popupTitle.textContent = "Congratulations!";
+
+  const closeButton = document.createElement("button");
+  closeButton.className = "close-popup-button";
+  closeButton.innerHTML = "&times;";
+  closeButton.addEventListener("click", () => {
+    popupOverlay.remove;
+  });
+
+  //fix close issue
+  closeButton.addEventListener("click", () => {
+    console.log("Close button clicked");
+    popupOverlay.remove();
+  });
+
+  const popupBody = document.createElement("div");
+  popupBody.className = "popup-body";
+  popupBody.classList.add("centered-popup-body");
+  popupBody.textContent =
+    "You have solved the puzzle! (:";
+
+  popupHeader.appendChild(popupTitle);
+  popupHeader.appendChild(closeButton);
+
+  popupContent.appendChild(popupHeader);
+  popupContent.appendChild(popupBody);
+
+  popupOverlay.appendChild(popupContent);
+
+  document.body.appendChild(popupOverlay);
+}
+
+//Check Solve State
+function moveTile(tileElement) {
+  const row = parseInt(tileElement.dataset.row);
+  const col = parseInt(tileElement.dataset.col);
+
+  if (isValidMove(row, col)) {
+    if (isSoundOn) validSound.play();
+
+    boardState[blankTile.row][blankTile.col] = boardState[row][col];
+    boardState[row][col] = null;
+
+    blankTile = { row, col };
+    moveCount++;
+    updateMoveLabel(moveCount);
+
+    setTimeout(() => {
+      renderGameboard(boardState);
+
+      //Verify board solved state
+      if (isPuzzleSolved(boardState)) {
+        stopTimer();
+        showSolvedPopup();
+      }
+    }, 300);
+  } else {
+    if (isSoundOn) invalidSound.play();
+  }
+}
