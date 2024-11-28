@@ -542,7 +542,8 @@ function showSolvedPopup() {
   const popupBody = document.createElement("div");
   popupBody.className = "popup-body";
   popupBody.classList.add("centered-popup-body");
-  popupBody.textContent = "You have solved the puzzle! (:";
+  // popupBody.textContent = "You have solved the puzzle! (:";
+  popupBody.textContent = `You have solved the puzzle with ${moveCount} moves in ${timeElapsed} seconds! (:`;
 
   popupHeader.appendChild(popupTitle);
   popupHeader.appendChild(closeButton);
