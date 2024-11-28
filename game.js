@@ -414,46 +414,6 @@ function isValidMove(row, col) {
   return (rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1);
 }
 
-// Function to move a tile
-function moveTile(tileElement) {
-  const row = parseInt(tileElement.dataset.row);
-
-  const col = parseInt(tileElement.dataset.col);
-
-  console.log(`Clicked: (${row}, ${col})`);
-
-  // Ignore invalid moves and play invalid sound
-  if (isValidMove(row, col)) {
-    if (isSoundOn) {
-      validSound.play();
-    }
-
-    // Swap tile with the blank space in boardState
-    boardState[blankTile.row][blankTile.col] = boardState[row][col];
-    boardState[row][col] = null;
-
-    // Update blank tile position
-    const prevBlank = { ...blankTile }; // Save current blank position
-    blankTile = { row, col }; // Update blank position
-
-    moveCount++;
-    updateMoveLabel(moveCount);
-
-    // Animate the tile to the blank position
-    tileElement.style.transform = `translate(
-    ${(prevBlank.col - col) * 100}%,
-    ${(prevBlank.row - row) * 100}%
-  )`;
-
-    // After animation, re-render the gameboard
-    setTimeout(() => renderGameboard(boardState), 300);
-  } else {
-    if (isSoundOn) {
-      invalidSound.play();
-    }
-  }
-}
-
 // Event listener for tile clicks
 gameGrid.addEventListener("click", (event) => {
   const tileElement = event.target;
@@ -499,6 +459,7 @@ function resetGame() {
   toggleControls(false);
   stopTimer();
 
+  // No method to reset, so we pause and set time to 0 to restart music
   backgroundMusic.pause();
   backgroundMusic.currentTime = 0;
 
@@ -539,43 +500,13 @@ function showSolvedNotification() {
   const notification = document.createElement("div");
   notification.className = "solved-notification";
   notification.textContent = "Congratulations! You solved the puzzle!";
-  
+
   document.body.appendChild(notification);
 
   // Remove the notification after 3 seconds
   setTimeout(() => {
     notification.remove();
   }, 3000);
-}
-
-// Modify moveTile function to check for solved state
-function moveTile(tileElement) {
-  const row = parseInt(tileElement.dataset.row);
-  const col = parseInt(tileElement.dataset.col);
-
-  if (isValidMove(row, col)) {
-    if (isSoundOn) validSound.play();
-
-    // Swap tile with the blank space in boardState
-    boardState[blankTile.row][blankTile.col] = boardState[row][col];
-    boardState[row][col] = null;
-
-    blankTile = { row, col };
-    moveCount++;
-    updateMoveLabel(moveCount);
-
-    setTimeout(() => {
-      renderGameboard(boardState);
-
-      // Check if the puzzle is solved
-      if (isPuzzleSolved(boardState)) {
-        stopTimer();
-        showSolvedNotification();
-      }
-    }, 300);
-  } else {
-    if (isSoundOn) invalidSound.play();
-  }
 }
 
 /*Win/ Solved Board Logic*/
@@ -611,8 +542,8 @@ function showSolvedPopup() {
   const popupBody = document.createElement("div");
   popupBody.className = "popup-body";
   popupBody.classList.add("centered-popup-body");
-  popupBody.textContent =
-    "You have solved the puzzle! (:";
+  // popupBody.textContent = "You have solved the puzzle! (:";
+  popupBody.textContent = `You have solved the puzzle with ${moveCount} moves in ${timeElapsed} seconds! (:`;
 
   popupHeader.appendChild(popupTitle);
   popupHeader.appendChild(closeButton);
@@ -625,31 +556,53 @@ function showSolvedPopup() {
   document.body.appendChild(popupOverlay);
 }
 
-//Check Solve State
+// Function to move a tile
 function moveTile(tileElement) {
+  // Prevent tiles from moving before game starts
+  if (!gameStarted) return;
+
   const row = parseInt(tileElement.dataset.row);
+
   const col = parseInt(tileElement.dataset.col);
 
-  if (isValidMove(row, col)) {
-    if (isSoundOn) validSound.play();
+  console.log(`Clicked: (${row}, ${col})`);
 
+  // Ignore invalid moves and play invalid sound
+  if (isValidMove(row, col)) {
+    if (isSoundOn) {
+      validSound.play();
+    }
+
+    // Swap tile with the blank space in boardState
     boardState[blankTile.row][blankTile.col] = boardState[row][col];
     boardState[row][col] = null;
 
-    blankTile = { row, col };
+    // Update blank tile position
+    const prevBlank = { ...blankTile }; // Save current blank position
+    blankTile = { row, col }; // Update blank position
+
     moveCount++;
     updateMoveLabel(moveCount);
 
+    // Animate the tile to the blank position
+    tileElement.style.transform = `translate(
+    ${(prevBlank.col - col) * 100}%,
+    ${(prevBlank.row - row) * 100}%
+  )`;
+
+    // After animation, re-render the gameboard
     setTimeout(() => {
       renderGameboard(boardState);
-
       //Verify board solved state
       if (isPuzzleSolved(boardState)) {
         stopTimer();
         showSolvedPopup();
+        resetGame();
       }
     }, 300);
   } else {
-    if (isSoundOn) invalidSound.play();
+    if (isSoundOn) {
+      invalidSound.play();
+    }
   }
 }
