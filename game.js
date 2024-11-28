@@ -459,6 +459,7 @@ function resetGame() {
   toggleControls(false);
   stopTimer();
 
+  // No method to reset, so we pause and set time to 0 to restart music
   backgroundMusic.pause();
   backgroundMusic.currentTime = 0;
 
@@ -506,36 +507,6 @@ function showSolvedNotification() {
   setTimeout(() => {
     notification.remove();
   }, 3000);
-}
-
-// Modify moveTile function to check for solved state
-function moveTile(tileElement) {
-  const row = parseInt(tileElement.dataset.row);
-  const col = parseInt(tileElement.dataset.col);
-
-  if (isValidMove(row, col)) {
-    if (isSoundOn) validSound.play();
-
-    // Swap tile with the blank space in boardState
-    boardState[blankTile.row][blankTile.col] = boardState[row][col];
-    boardState[row][col] = null;
-
-    blankTile = { row, col };
-    moveCount++;
-    updateMoveLabel(moveCount);
-
-    setTimeout(() => {
-      renderGameboard(boardState);
-
-      // Check if the puzzle is solved
-      if (isPuzzleSolved(boardState)) {
-        stopTimer();
-        showSolvedNotification();
-      }
-    }, 300);
-  } else {
-    if (isSoundOn) invalidSound.play();
-  }
 }
 
 /*Win/ Solved Board Logic*/
@@ -625,6 +596,7 @@ function moveTile(tileElement) {
       if (isPuzzleSolved(boardState)) {
         stopTimer();
         showSolvedPopup();
+        resetGame();
       }
     }, 300);
   } else {
