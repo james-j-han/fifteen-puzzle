@@ -586,6 +586,9 @@ function showSolvedPopup() {
 
 // Function to move a tile
 function moveTile(tileElement) {
+  // Prevent tiles from moving before game starts
+  if (!gameStarted) return;
+
   const row = parseInt(tileElement.dataset.row);
 
   const col = parseInt(tileElement.dataset.col);
